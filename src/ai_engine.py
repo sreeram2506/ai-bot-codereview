@@ -62,34 +62,39 @@ class AIEngine:
                 diff_str += f"{line_num}: {content}\n"
 
         return f"""
-You are an expert code reviewer. Analyze the following code diff and provide a review.
-Focus on correctness, bugs, security issues, performance issues, and best coding practices.
+    You are an expert code reviewer. Analyze the following code diff and generate findings.
 
-Diff Input:
-{diff_str}
+    The output MUST be ONLY a JSON object.
+    Absolutely no explanations, no markdown, no text before or after the JSON.
+    Do NOT wrap the JSON in code fences like ```json.
 
-Return ONLY valid JSON:
+    Analyze correctness, bugs, security issues, performance issues, readability, and best practices.
 
-{{
-  "summary": "text summary in markdown",
-  "issues": [
+    Diff Input:
+    {diff_str}
+
+    Respond in EXACTLY this JSON format:
+
     {{
-      "file": "path/to/file",
-      "line": 123,
-      "severity": "error|warning|info",
-      "message": "issue description",
-      "suggestion": "how to fix it"
+      "summary": "short summary",
+      "issues": [
+        {{
+          "file": "string",
+          "line": number,
+          "severity": "error | warning | info",
+          "message": "string",
+          "suggestion": "string"
+        }}
+      ]
     }}
-  ]
-}}
 
-If no issues:
+    If no issues respond with exactly:
 
-{{
-  "summary": "summary",
-  "issues": []
-}}
-"""
+    {{
+      "summary": "short summary",
+      "issues": []
+    }}
+    """
 
     def _parse_json_response(self, text: str) -> Dict[str, Any]:
         try:
